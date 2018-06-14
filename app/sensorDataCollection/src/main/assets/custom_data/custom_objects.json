@@ -1,0 +1,5 @@
+[
+  {"Ident" : "poi_model", "Latitude": "47.513726", "Longitude": "19.026294", "AltitudeInFeet": "100", "RotationPitch" : "90", "RotationHeading" : "90", "modelFile" :"models/poi.zip"},
+  {"Ident" : "cnp_model", "Latitude": "47.513726", "Longitude": "19.036294", "AltitudeInFeet": "100", "RotationPitch" : "90", "RotationHeading" : "90", "modelFile" :"models/cnp.zip"},
+  {"Ident" : "reference_model", "Latitude": "47.513726", "Longitude": "19.036294", "AltitudeInFeet": "100", "RotationPitch" : "90", "RotationHeading" : "90", "modelFile" :"models/reference.zip"}
+]

@@ -9,6 +9,12 @@ sourceCompatibility = 1.6
 def remotePublish = false
 
 android {
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
     compileSdkVersion Integer.valueOf(project.ext.androidCompileSDKVersion)
     buildToolsVersion project.ext.androidBuildToolsVersion
 

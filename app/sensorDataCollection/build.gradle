@@ -1,0 +1,40 @@
+apply plugin: 'com.android.application'
+apply from: "$rootDir/gradle/quality.gradle"
+
+android {
+    compileSdkVersion Integer.valueOf(project.ext.androidCompileSDKVersion)
+    buildToolsVersion project.ext.androidBuildToolsVersion
+
+    defaultConfig {
+		minSdkVersion Integer.valueOf(project.ext.androidMinSDKVersion)
+		targetSdkVersion Integer.valueOf(project.ext.androidTargetSDKVersion)
+        multiDexEnabled true
+    }
+
+    dexOptions {
+        jumboMode true
+        javaMaxHeapSize "4g"
+    }
+
+    lintOptions {
+        abortOnError false
+        lintConfig file(new File(rootDir, "etc/lint.xml"))
+    }
+
+    packagingOptions {
+        exclude 'LICENSE'
+        exclude 'NOTICE'
+    }
+
+    dependencies {
+        compile project(':lib:external:g3m:Android:G3MAndroidSDK')
+        compile project(':lib:commonJava')
+        compile project(':lib:external:poly2tri')
+        compile project(':lib:external:geopackage-sdk')
+        compile files('libs/jsi-1.0.0.jar')
+        compile 'net.sf.trove4j:trove4j:2.0.2'
+        compile 'org.slf4j:slf4j-api:1.6.3'
+    }
+
+    compileOptions.encoding = 'UTF-8'
+}

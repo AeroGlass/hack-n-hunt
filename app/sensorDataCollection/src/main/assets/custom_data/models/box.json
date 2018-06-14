@@ -1,0 +1,73 @@
+{"type":"node","id":"root","nodes":[
+  {"type":"material","sid":"mat2","baseColor":{"r":0.0216932,"g":0.56866,"b":0.64},"specularColor":{"r":0.5,"g":0.5,"b":0.5},"nodes":[
+      {"type":"geometry","primitive":"triangles","id":"mat2"
+      ,"positions":[
+        1.000000477,1,-0.9999994636,
+        -0.9999999404,1,-1,
+        -1.000000358,1,0.9999996424,
+        0.9999993443,1,1.000000596
+       ]
+      ,"indices":[0,1,2,0,2,3]
+      }
+  ]}
+,
+  {"type":"material","sid":"mat5","baseColor":{"r":0.582518,"g":0,"b":0.64},"specularColor":{"r":0.5,"g":0.5,"b":0.5},"nodes":[
+      {"type":"geometry","primitive":"triangles","id":"mat5"
+      ,"positions":[
+        1,-1,-0.9999999404,
+        1,-1,1,
+        -1.000000119,-1,0.9999998212,
+        -0.9999996424,-1,-1.000000358
+       ]
+      ,"indices":[0,1,2,0,2,3]
+      }
+  ]}
+,
+  {"type":"material","sid":"mat6","baseColor":{"r":0.0545293,"g":0.64,"b":0.0315292},"specularColor":{"r":0.5,"g":0.5,"b":0.5},"nodes":[
+      {"type":"geometry","primitive":"triangles","id":"mat6"
+      ,"positions":[
+        1.000000477,1,-0.9999994636,
+        1,-1,-0.9999999404,
+        -0.9999996424,-1,-1.000000358,
+        -0.9999999404,1,-1
+       ]
+      ,"indices":[0,1,2,0,2,3]
+      }
+  ]}
+,
+  {"type":"material","sid":"mat1","baseColor":{"r":0.0148533,"g":0.0216345,"b":0.64},"specularColor":{"r":0.5,"g":0.5,"b":0.5},"nodes":[
+      {"type":"geometry","primitive":"triangles","id":"mat1"
+      ,"positions":[
+        1,-1,-0.9999999404,
+        1.000000477,1,-0.9999994636,
+        0.9999993443,1,1.000000596,
+        1,-1,1
+       ]
+      ,"indices":[0,1,2,0,2,3]
+      }
+  ]}
+,
+  {"type":"material","sid":"mat3","baseColor":{"r":0.64,"g":0.0724479,"b":0.0491875},"specularColor":{"r":0.5,"g":0.5,"b":0.5},"nodes":[
+      {"type":"geometry","primitive":"triangles","id":"mat3"
+      ,"positions":[
+        1,-1,1,
+        0.9999993443,1,1.000000596,
+        -1.000000358,1,0.9999996424,
+        -1.000000119,-1,0.9999998212
+       ]
+      ,"indices":[0,1,2,0,2,3]
+      }
+  ]}
+,
+  {"type":"material","sid":"mat4","baseColor":{"r":0.64,"g":0.633828,"b":0},"specularColor":{"r":0.5,"g":0.5,"b":0.5},"nodes":[
+      {"type":"geometry","primitive":"triangles","id":"mat4"
+      ,"positions":[
+        -1.000000119,-1,0.9999998212,
+        -1.000000358,1,0.9999996424,
+        -0.9999999404,1,-1,
+        -0.9999996424,-1,-1.000000358
+       ]
+      ,"indices":[0,1,2,0,2,3]
+      }
+  ]}
+]}
