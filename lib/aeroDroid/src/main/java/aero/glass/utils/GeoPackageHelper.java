@@ -91,8 +91,7 @@ public class GeoPackageHelper {
         manager.deleteAll();
         File dir = new File(Environment.getExternalStorageDirectory(), "aeroglass/geopackage");
         if (!dir.isDirectory()) {
-            dbFile = null;
-            return;
+            dir.mkdirs();
         }
 
         dbFile = new File(dir, DB_FILE_NAME);

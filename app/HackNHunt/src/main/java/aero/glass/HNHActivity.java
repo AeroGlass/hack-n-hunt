@@ -17,13 +17,13 @@ public class HNHActivity extends AeroActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         activityStateComponent = new ActivityStateComponent(this);
         activityStateComponent.load();
 
         g3mComponent = new G3MComponent(this);
         g3mComponent.onCreate();
+
+        super.onCreate(savedInstanceState);
     }
 
     protected void onCreateLayout() {

@@ -20,8 +20,6 @@ public class SDCActivity extends AeroActivity implements WifiHandler.WifiNewScan
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
         activityStateComponent = new ActivityStateComponent(this);
         activityStateComponent.load();
 
@@ -29,6 +27,8 @@ public class SDCActivity extends AeroActivity implements WifiHandler.WifiNewScan
         g3mComponent.onCreate();
 
         wifiHandler = new WifiHandler(this, this);
+
+        super.onCreate(savedInstanceState);
     }
 
     @Override
