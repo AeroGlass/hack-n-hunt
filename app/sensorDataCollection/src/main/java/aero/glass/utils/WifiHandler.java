@@ -18,17 +18,48 @@ import aero.glass.threading.ThreadClusterFactory;
 
 public class WifiHandler extends BroadcastReceiver {
 
+    public interface WifiNewScanAvailableCallback {
+        void wifiNewScanAvailable();
+    }
+
     private Activity activity;
     private IThread startScanningThread;
     private boolean started = false;
+    private WifiNewScanAvailableCallback wifiNewScanAvailableCallback;
 
-    public WifiHandler(Activity a) {
+    private List<ScanResult> wifiScanResult;
+
+    public WifiHandler(Activity a, WifiNewScanAvailableCallback cb) {
         activity = a;
+        wifiNewScanAvailableCallback = cb;
     }
 
     public void onReceive(Context c, Intent intent) {
         WifiManager wifiManager = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
         List<ScanResult> scanResult = wifiManager.getScanResults();
+        if (wifiScanResult == null || scanResult.size() != wifiScanResult.size()) {
+            wifiScanResult = scanResult;
+            wifiNewScanAvailableCallback.wifiNewScanAvailable();
+            return;
+        }
+        boolean same = true;
+        for(int i=0;i<scanResult.size();i++) {
+            boolean found = false;
+            for(int j=0;j<wifiScanResult.size();j++) {
+                if (scanResult.get(i).SSID.equals(wifiScanResult.get(j).SSID)) {
+                    found = true;
+                    break;
+                }
+            }
+            if (!found) {
+                same = false;
+                break;
+            }
+        }
+        if (!same) {
+            wifiScanResult = scanResult;
+            wifiNewScanAvailableCallback.wifiNewScanAvailable();
+        }
     }
 
     public void onStart() {
@@ -42,6 +73,16 @@ public class WifiHandler extends BroadcastReceiver {
         startScanningThread = ThreadClusterFactory.createThreadTimed(
                 new StartScanningThread(), null, 5000, true);
         started = true;
+    }
+
+    public void onStop() {
+        Log.d("DEBUG", "WIFIHANDLER: onstop called");
+        if (!started) {return;}
+        startScanningThread.stopThread(6000);
+        activity.unregisterReceiver(this);
+        WifiManager wifiManager = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
+        wifiManager.setWifiEnabled(false);
+        started = false;
     }
 
     private class StartScanningThread implements IRunnable {

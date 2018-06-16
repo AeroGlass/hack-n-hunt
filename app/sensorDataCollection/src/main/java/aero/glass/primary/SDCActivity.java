@@ -2,9 +2,12 @@ package aero.glass.primary;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,7 +24,7 @@ import aero.glass.utils.WifiHandler;
  * Created by vregath on 08/03/18.
  */
 
-public class SDCActivity extends Activity {
+public class SDCActivity extends Activity implements WifiHandler.WifiNewScanAvailableCallback {
     public static final boolean DEMO_MODE = false;
     public static final boolean PLANET = false;
 
@@ -54,7 +57,7 @@ public class SDCActivity extends Activity {
         createLayout();
         sensorComponent = new SensorComponent(this, g3mComponent);
 
-        wifiHandler = new WifiHandler(this);
+        wifiHandler = new WifiHandler(this, this);
     }
 
     @Override
@@ -69,12 +72,14 @@ public class SDCActivity extends Activity {
         super.onResume();
         cameraPreview.start(g3mComponent);
         sensorComponent.onResume();
+        wifiHandler.onStart();
     }
 
     @Override
     protected void onPause() {
         sensorComponent.onPause();
         cameraPreview.stop();
+        wifiHandler.onStop();
         super.onPause();
     }
 
@@ -83,6 +88,7 @@ public class SDCActivity extends Activity {
         if (g3mComponent.isStartupDone()) {
             g3mComponent.onStop();
         }
+        wifiHandler.onStop();
         super.onStop();
     }
 
@@ -90,6 +96,7 @@ public class SDCActivity extends Activity {
     protected void onDestroy() {
         activityStateComponent.save();
         g3mComponent.onDestroy();
+        wifiHandler.onStop();
         super.onDestroy();
     }
 
@@ -216,5 +223,12 @@ public class SDCActivity extends Activity {
     @Override
     public void onBackPressed() {
         sensorComponent.resetCage();
+    }
+
+    @Override
+    public void wifiNewScanAvailable() {
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        v.vibrate(500);
+
     }
 }
