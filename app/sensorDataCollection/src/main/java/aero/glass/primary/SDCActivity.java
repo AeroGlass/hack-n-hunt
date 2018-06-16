@@ -227,8 +227,12 @@ public class SDCActivity extends Activity implements WifiHandler.WifiNewScanAvai
 
     @Override
     public void wifiNewScanAvailable() {
-        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        v.vibrate(500);
-
+        String SSID = "DIGI-01071319";
+        String pass = "asrkJMCy";
+        boolean connected = wifiHandler.connectIfExist(SSID, pass);
+        if (connected) {
+            Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            v.vibrate(500);
+        }
     }
 }
