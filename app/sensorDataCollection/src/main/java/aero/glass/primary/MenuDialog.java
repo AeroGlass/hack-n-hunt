@@ -14,9 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-import org.glob3.mobile.generated.Geodetic2D;
 import org.glob3.mobile.generated.Geodetic3D;
-import org.glob3.mobile.generated.Planet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,7 +29,7 @@ import aero.glass.unit.LengthUnit;
  */
 
 public class MenuDialog implements DialogInterface.OnShowListener{
-    private SDCActivity activity;
+    private AeroActivity activity;
     private AlertDialog routeDialog;
 
     private LinearLayout baseView;
@@ -51,9 +49,11 @@ public class MenuDialog implements DialogInterface.OnShowListener{
     final private Map<String, LengthUnit> unitNameMap = new HashMap<String, LengthUnit>();
     private Map<String, Pair<Geodetic3D, List<Bitmap>>> cnps;
     private List<String> cnpArray;
+    final private G3MComponent g3mComponent;
 
-    public MenuDialog(SDCActivity a) {
+    public MenuDialog(AeroActivity a, G3MComponent g) {
         activity = a;
+        g3mComponent = g;
 
         for (LengthUnit unit : LengthUnit.values()) {
             unitNameMap.put(unit.toString(), unit);
@@ -70,9 +70,9 @@ public class MenuDialog implements DialogInterface.OnShowListener{
     protected void onClickOK() {
         if (selectedRouteName != null && !selectedRouteName.equals(activity.activityStateComponent.getLastRoute())) {
             activity.activityStateComponent.setLastRoute(selectedRouteName);
-            activity.g3mComponent.routeSelected(selectedRouteName, cnpArray, cnps);
+            g3mComponent.routeSelected(selectedRouteName, cnpArray, cnps);
         }
-        activity.g3mComponent.cnpSelected(selectedCNP);
+        g3mComponent.cnpSelected(selectedCNP);
         activity.activityStateComponent.setLastCNP(selectedCNP);
     }
 
@@ -82,7 +82,7 @@ public class MenuDialog implements DialogInterface.OnShowListener{
 
     protected void onClickThird() {
         routeDialog.cancel();
-        activity.g3mComponent.setReference();
+        g3mComponent.setReference();
     }
 
     @Override
@@ -217,7 +217,7 @@ public class MenuDialog implements DialogInterface.OnShowListener{
 
     private ArrayAdapter getCnpAdapter(String route) {
         cnps = activity.geoPackageHelper.getCoordImageMap(G3MComponent.CNP_FEATURE_NAME, route);
-        cnpArray = activity.g3mComponent.sortCNPs(cnps, route);
+        cnpArray = g3mComponent.sortCNPs(cnps, route);
         ArrayAdapter arrayAdapter = new ArrayAdapter(activity, android.R.layout.simple_spinner_item, cnpArray);
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         return arrayAdapter;

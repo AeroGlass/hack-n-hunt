@@ -27,13 +27,7 @@ android {
     }
 
     dependencies {
-        compile project(':lib:external:g3m:Android:G3MAndroidSDK')
-        compile project(':lib:commonJava')
-        compile project(':lib:external:poly2tri')
-        compile project(':lib:external:geopackage-sdk')
-        compile files('libs/jsi-1.0.0.jar')
-        compile 'net.sf.trove4j:trove4j:2.0.2'
-        compile 'org.slf4j:slf4j-api:1.6.3'
+        compile project(':lib:aeroDroid')
     }
 
     compileOptions.encoding = 'UTF-8'

@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import aero.glass.aeroDroid.R;
+import aero.glass.android.R;
 import aero.glass.primary.AeroActivity;
 import aero.glass.unit.LengthUnit;
 
