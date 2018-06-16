@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import aero.glass.android.R;
 import aero.glass.unit.Geoid;
 import aero.glass.utils.GeoPackageHelper;
+import aero.glass.utils.WifiHandler;
 
 /**
  * Created by vregath on 08/03/18.
@@ -28,6 +29,7 @@ public class SDCActivity extends Activity {
     protected SensorComponent sensorComponent;
     protected ActivityStateComponent activityStateComponent;
     protected GeoPackageHelper geoPackageHelper;
+    protected WifiHandler wifiHandler;
 
     private CameraPreview cameraPreview;
 
@@ -51,12 +53,15 @@ public class SDCActivity extends Activity {
 
         createLayout();
         sensorComponent = new SensorComponent(this, g3mComponent);
+
+        wifiHandler = new WifiHandler(this);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         g3mComponent.onStart();
+        wifiHandler.onStart();
     }
 
     @Override
