@@ -6,7 +6,7 @@ include 'lib:external:g3m:Android:G3MAndroidSDK'
 include 'lib:external:poly2tri'
 include 'lib:external:geopackage-sdk'
 
-include 'app:android'
+include 'app:HackNHunt'
 include 'app:sensorDataCollection'
 
 include 'lib:commonJava'
