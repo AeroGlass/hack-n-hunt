@@ -12,7 +12,7 @@ import static aero.glass.unit.LengthUnit.Meter;
  * Contains the state of the activity and saves/loads it.
  * Created by DrakkLord on 2015. 10. 13..
  */
-public class ActivityStateComponent {
+public class ActivityStateBaseComponent {
     protected Activity activity;
 
     public static final String PREFERENCES_NAME = AeroActivity.class.toString();
@@ -29,12 +29,12 @@ public class ActivityStateComponent {
     private String lastRoute;
     private int lastCNP;
 
-    protected ActivityStateComponent(AeroActivity ca) {
+    protected ActivityStateBaseComponent(AeroActivity ca) {
         activity = ca;
     }
 
     /** Called when the preferences should be loaded and stored for later use. */
-    protected void load() {
+    public void load() {
         SharedPreferences prefs = activity.getSharedPreferences(PREFERENCES_NAME,
                 Context.MODE_PRIVATE);
         lookAhead = prefs.getBoolean(PREFS_LOOK_AHEAD, true);

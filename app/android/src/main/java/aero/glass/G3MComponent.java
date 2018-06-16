@@ -1,4 +1,4 @@
-package aero.glass.primary;
+package aero.glass;
 
 import android.graphics.Bitmap;
 import android.util.DisplayMetrics;
@@ -32,6 +32,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import aero.glass.primary.AeroActivity;
+import aero.glass.primary.G3MBaseComponent;
+import aero.glass.primary.StartupScreen;
 import aero.glass.renderer.linerender.PatternRenderer;
 import aero.glass.renderer.mark.AeroMark;
 import aero.glass.renderer.mark.AeroMarkInfo;
@@ -82,7 +85,6 @@ public class G3MComponent extends G3MBaseComponent {
     private Map<String, Shape> shapeMarkMap = new HashMap<String, Shape>();
     private List<String> sortedSCNPs = new ArrayList<String>();
     private long lastLabelUpdate = System.currentTimeMillis();
-    private volatile boolean bCreateVisualsDone = false;
 
     protected G3MComponent(AeroActivity a) {
         super(a);
@@ -398,7 +400,7 @@ public class G3MComponent extends G3MBaseComponent {
     public List<String> sortCNPs(Map<String, Pair<Geodetic3D, List<Bitmap>>> coordImageMap, String route) {
         List<Geodetic3D> routeList = activity.geoPackageHelper.getRoutes(G3MComponent.ROUTE_FEATURE_NAME, route);
         List<String> cnpArray = new ArrayList<String>();
-        Planet planet = activity.g3mComponent.g3mWidget.getG3MContext().getPlanet();
+        Planet planet = g3mWidget.getG3MContext().getPlanet();
         for(Geodetic3D geodetic3D : routeList) {
             for(Map.Entry<String, Pair<Geodetic3D, List<Bitmap>>> cnp : coordImageMap.entrySet()) {
                 Double distance = planet.computePreciseLatLonDistance(
@@ -413,7 +415,4 @@ public class G3MComponent extends G3MBaseComponent {
         return cnpArray;
     }
 
-    public boolean isCreateVisualsDone() {
-        return bCreateVisualsDone;
-    }
 }

@@ -38,7 +38,7 @@ public class SensorComponent implements SensorEventListener, LocationListener{
     private SensorManager mSensorManager;
 
     private Sensor rotvecSensor;
-    private final G3MComponent g3MComponent;
+    private final G3MBaseComponent g3MComponent;
     private final Versor coordComp;
     private float yawOffset = -90.f;
     private Versor yawComp;
@@ -48,7 +48,7 @@ public class SensorComponent implements SensorEventListener, LocationListener{
 
     private volatile Location location = null;
 
-    public SensorComponent(AeroActivity a, G3MComponent g3m) {
+    public SensorComponent(AeroActivity a, G3MBaseComponent g3m) {
         activity = a;
         mSensorManager = (SensorManager) activity.getSystemService(SENSOR_SERVICE);
         rotvecSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
@@ -180,7 +180,7 @@ public class SensorComponent implements SensorEventListener, LocationListener{
         }
     }
 
-    synchronized void cage(float angle) {
+    public synchronized void cage(float angle) {
         yawComp.setFromEuler(0.f, 0.f, (float) Math.toRadians(yawOffset + angle));
     }
 

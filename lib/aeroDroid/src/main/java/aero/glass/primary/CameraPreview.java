@@ -202,7 +202,7 @@ public class CameraPreview extends ViewGroup implements SurfaceHolder.Callback {
         stop();
     }
 
-    public void start(G3MComponent g3mComponent) {
+    public void start(G3MBaseComponent g3mComponent) {
         if (mCamera == null) {
             mCamera = getCameraInstance();
             if (mCamera != null) {

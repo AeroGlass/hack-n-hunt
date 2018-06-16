@@ -41,16 +41,17 @@ import aero.glass.utils.G3MHelper;
 public abstract class G3MBaseComponent {
     private static final String TAG = "G3MComponent";
 
-    protected G3MWidget_Android g3mWidget;
+    public G3MWidget_Android g3mWidget;
     private IThreadUtils threadUtils;
     protected LabelImageBuilder progLabel;
     private volatile boolean bStartupDone;
     protected final AeroActivity activity;
     private volatile AHLR ahlr = null;
+    public volatile boolean bCreateVisualsDone = false;
 
-    abstract void onAsyncinit();
-    abstract boolean onSyncInit(G3MBuilder_Android builder);
-    abstract void onPreRenderTask();
+    protected abstract void onAsyncinit();
+    protected abstract boolean onSyncInit(G3MBuilder_Android builder);
+    public abstract void onPreRenderTask();
 
     /** Asynchronous initialization thread used on startup. */
     protected class InitThread implements IRunnable {
@@ -90,7 +91,7 @@ public abstract class G3MBaseComponent {
      * Class used to hook into the rendering cycle and calling the onUpdate function
      * on start of every frame.
      */
-    protected class PrePostRenderTasks extends IPrePostRenderTasks {
+    public class PrePostRenderTasks extends IPrePostRenderTasks {
         private long lastRender = System.currentTimeMillis();
 
         @Override
@@ -150,7 +151,7 @@ public abstract class G3MBaseComponent {
 
             @Override
             public void run(G3MContext context) {
-                startupThread = ThreadClusterFactory.createThreadOneShot(new G3MComponent.InitThread());
+                startupThread = ThreadClusterFactory.createThreadOneShot(new InitThread());
             }
         };
     }
@@ -159,7 +160,7 @@ public abstract class G3MBaseComponent {
         activity = ca;
     }
 
-    protected void onCreate() {
+    public void onCreate() {
         bStartupDone = false;
 
         // G3M essentials + blocking / important initializers
@@ -445,5 +446,9 @@ public abstract class G3MBaseComponent {
         if (count > 0) {
             Log.i("shader", "Added " + count + " additional GPU program sources");
         }
+    }
+
+    public boolean isCreateVisualsDone() {
+        return bCreateVisualsDone;
     }
 }

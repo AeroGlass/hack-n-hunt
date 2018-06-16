@@ -20,19 +20,16 @@ import aero.glass.utils.GeoPackageHelper;
  * Created by vregath on 08/03/18.
  */
 
-public class AeroActivity extends Activity {
+public abstract class AeroActivity extends Activity {
     public static final boolean DEMO_MODE = false;
     public static final boolean PLANET = false;
 
-    protected G3MComponent g3mComponent;
-    protected SensorComponent sensorComponent;
-    protected ActivityStateComponent activityStateComponent;
-    protected GeoPackageHelper geoPackageHelper;
+    public G3MBaseComponent g3mComponent;
+    public SensorComponent sensorComponent;
+    public ActivityStateBaseComponent activityStateComponent;
+    public GeoPackageHelper geoPackageHelper;
 
     private CameraPreview cameraPreview;
-
-    private float touchStartX;
-    private float touchStartY;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +37,8 @@ public class AeroActivity extends Activity {
 
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-        activityStateComponent = new ActivityStateComponent(this);
-        activityStateComponent.load();
-
         geoPackageHelper = new GeoPackageHelper(this);
 
-        g3mComponent = new G3MComponent(this);
-        g3mComponent.onCreate();
         Geoid.init(this);
 
         createLayout();
@@ -87,6 +79,8 @@ public class AeroActivity extends Activity {
         g3mComponent.onDestroy();
         super.onDestroy();
     }
+
+    protected abstract void onCreateLayout();
 
     @SuppressLint("ClickableViewAccessibility")
     private void createLayout() {
@@ -130,57 +124,7 @@ public class AeroActivity extends Activity {
 
         ll.addView(fl);
 
-        g3mComponent.g3mWidget.setOnTouchListener(new View.OnTouchListener() {
-            private static final long CLIKK_TIME_IN_MS = 200L;
-            private static final long WAIT_TIME_IN_MS = 200L;
-
-            private MenuDialog menuDialog;
-            private long downTime;
-            private long upTime;
-
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        if (activityStateComponent.isUrbanMode()) {
-                            touchStartX = event.getX();
-                            touchStartY = event.getY();
-                        }
-                        downTime = System.currentTimeMillis();
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        if (activityStateComponent.isUrbanMode()) {
-                            float x = event.getX();
-                            float y = event.getY();
-                            float dx = (x - touchStartX);
-                            float dy = (y - touchStartY);
-                            float dd = dx * 0.5f;
-                            sensorComponent.cage(dd);
-                            //Log.d("dedo", "YAW: " + dd + " x: " + x + " y: " + y);
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        final long now = System.currentTimeMillis();
-                        if (now - downTime < CLIKK_TIME_IN_MS && now - upTime > WAIT_TIME_IN_MS) {
-                            if (g3mComponent.isCreateVisualsDone()) {
-                                if (menuDialog == null) {
-                                    menuDialog = new MenuDialog(AeroActivity.this);
-                                    menuDialog.show();
-                                } else {
-                                    menuDialog.show();
-                                }
-                            }
-                        } else {
-                            if (activityStateComponent.isUrbanMode()) {
-                                sensorComponent.stopCage();
-                            }
-                        }
-                        upTime = now;
-                        break;
-                }
-                return true;
-            }
-        });
+        onCreateLayout();
     }
 
     @Override
