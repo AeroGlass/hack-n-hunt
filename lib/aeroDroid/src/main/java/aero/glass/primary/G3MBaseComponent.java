@@ -45,7 +45,7 @@ public abstract class G3MBaseComponent {
     private IThreadUtils threadUtils;
     protected LabelImageBuilder progLabel;
     private volatile boolean bStartupDone;
-    protected final HNHActivity activity;
+    protected final AeroActivity activity;
     private volatile AHLR ahlr = null;
 
     abstract void onAsyncinit();
@@ -155,7 +155,7 @@ public abstract class G3MBaseComponent {
         };
     }
 
-    protected G3MBaseComponent(HNHActivity ca) {
+    protected G3MBaseComponent(AeroActivity ca) {
         activity = ca;
     }
 

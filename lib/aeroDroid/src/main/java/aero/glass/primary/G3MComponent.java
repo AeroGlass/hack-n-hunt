@@ -18,11 +18,9 @@ import org.glob3.mobile.generated.OSMLayer;
 import org.glob3.mobile.generated.Planet;
 import org.glob3.mobile.generated.PlanetRenderer;
 import org.glob3.mobile.generated.Quality;
-
 import org.glob3.mobile.generated.SceneJSShapesParser;
 import org.glob3.mobile.generated.Shape;
 import org.glob3.mobile.generated.ShapesRenderer;
-
 import org.glob3.mobile.generated.TimeInterval;
 import org.glob3.mobile.generated.Trail;
 import org.glob3.mobile.generated.TrailsRenderer;
@@ -46,7 +44,7 @@ import aero.glass.unit.Location;
 import aero.glass.utils.JSONHelper;
 import aero.glass.utils.JSONModel;
 
-import static aero.glass.primary.HNHActivity.PLANET;
+import static aero.glass.primary.AeroActivity.PLANET;
 import static aero.glass.unit.AltitudeReference.WGS84;
 import static aero.glass.unit.LengthUnit.Meter;
 import static org.glob3.mobile.generated.AltitudeMode.ABSOLUTE;
@@ -86,7 +84,7 @@ public class G3MComponent extends G3MBaseComponent {
     private long lastLabelUpdate = System.currentTimeMillis();
     private volatile boolean bCreateVisualsDone = false;
 
-    protected G3MComponent(HNHActivity a) {
+    protected G3MComponent(AeroActivity a) {
         super(a);
     }
 

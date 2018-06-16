@@ -12,7 +12,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import aero.glass.android.R;
+import aero.glass.aeroDroid.R;
 import aero.glass.unit.Geoid;
 import aero.glass.utils.GeoPackageHelper;
 
@@ -20,7 +20,7 @@ import aero.glass.utils.GeoPackageHelper;
  * Created by vregath on 08/03/18.
  */
 
-public class HNHActivity extends Activity {
+public class AeroActivity extends Activity {
     public static final boolean DEMO_MODE = false;
     public static final boolean PLANET = false;
 
@@ -164,7 +164,7 @@ public class HNHActivity extends Activity {
                         if (now - downTime < CLIKK_TIME_IN_MS && now - upTime > WAIT_TIME_IN_MS) {
                             if (g3mComponent.isCreateVisualsDone()) {
                                 if (menuDialog == null) {
-                                    menuDialog = new MenuDialog(HNHActivity.this);
+                                    menuDialog = new MenuDialog(AeroActivity.this);
                                     menuDialog.show();
                                 } else {
                                     menuDialog.show();

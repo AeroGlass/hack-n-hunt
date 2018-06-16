@@ -15,7 +15,7 @@ import static aero.glass.unit.LengthUnit.Meter;
 public class ActivityStateComponent {
     protected Activity activity;
 
-    public static final String PREFERENCES_NAME = HNHActivity.class.toString();
+    public static final String PREFERENCES_NAME = AeroActivity.class.toString();
 
     private static final String PREFS_LOOK_AHEAD = "look_ahead" ;
     private static final String PREFS_URBAN_MODE = "urban_mode" ;
@@ -29,7 +29,7 @@ public class ActivityStateComponent {
     private String lastRoute;
     private int lastCNP;
 
-    protected ActivityStateComponent(HNHActivity ca) {
+    protected ActivityStateComponent(AeroActivity ca) {
         activity = ca;
     }
 

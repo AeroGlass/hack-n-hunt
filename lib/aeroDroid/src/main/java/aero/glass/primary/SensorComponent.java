@@ -1,6 +1,5 @@
 package aero.glass.primary;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.hardware.Sensor;
@@ -22,7 +21,7 @@ import aero.glass.math.Versor;
 import aero.glass.unit.AHLR;
 import aero.glass.unit.Location;
 
-import static aero.glass.primary.HNHActivity.DEMO_MODE;
+import static aero.glass.primary.AeroActivity.DEMO_MODE;
 import static aero.glass.unit.AltitudeReference.WGS84;
 import static aero.glass.unit.LengthUnit.Meter;
 import static android.content.Context.SENSOR_SERVICE;
@@ -44,12 +43,12 @@ public class SensorComponent implements SensorEventListener, LocationListener{
     private float yawOffset = -90.f;
     private Versor yawComp;
 
-    private HNHActivity activity;
+    private AeroActivity activity;
     LinkedList<android.location.Location> gpsMeasurments = new LinkedList<android.location.Location>();
 
     private volatile Location location = null;
 
-    public SensorComponent(HNHActivity a, G3MComponent g3m) {
+    public SensorComponent(AeroActivity a, G3MComponent g3m) {
         activity = a;
         mSensorManager = (SensorManager) activity.getSystemService(SENSOR_SERVICE);
         rotvecSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);

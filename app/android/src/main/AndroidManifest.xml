@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:screenOrientation="landscape"
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen" >
-        <activity android:name="aero.glass.primary.HNHActivity">
+        <activity android:name="aero.glass.HNHActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -14,16 +14,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-import org.glob3.mobile.generated.Geodetic2D;
 import org.glob3.mobile.generated.Geodetic3D;
-import org.glob3.mobile.generated.Planet;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import aero.glass.android.R;
+import aero.glass.aeroDroid.R;
 import aero.glass.unit.LengthUnit;
 
 /**
@@ -31,7 +29,7 @@ import aero.glass.unit.LengthUnit;
  */
 
 public class MenuDialog implements DialogInterface.OnShowListener{
-    private HNHActivity activity;
+    private AeroActivity activity;
     private AlertDialog routeDialog;
 
     private LinearLayout baseView;
@@ -52,7 +50,7 @@ public class MenuDialog implements DialogInterface.OnShowListener{
     private Map<String, Pair<Geodetic3D, List<Bitmap>>> cnps;
     private List<String> cnpArray;
 
-    public MenuDialog(HNHActivity a) {
+    public MenuDialog(AeroActivity a) {
         activity = a;
 
         for (LengthUnit unit : LengthUnit.values()) {

@@ -57,7 +57,7 @@ import mil.nga.wkb.geom.Polygon;
 import poly2Tri.Triangle;
 import poly2Tri.Triangulation;
 
-import static aero.glass.primary.HNHActivity.DEMO_MODE;
+import static aero.glass.primary.AeroActivity.DEMO_MODE;
 import static aero.glass.unit.AltitudeReference.WGS84;
 import static aero.glass.unit.LengthUnit.Meter;
 

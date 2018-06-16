@@ -2,8 +2,6 @@ package aero.glass.renderer.aerohud;
 
 import java.util.ArrayList;
 
-import aero.glass.primary.G3MComponent;
-import aero.glass.renderer.linerender.IPattern;
 import aero.glass.renderer.textrender.RenderableText;
 
 /**

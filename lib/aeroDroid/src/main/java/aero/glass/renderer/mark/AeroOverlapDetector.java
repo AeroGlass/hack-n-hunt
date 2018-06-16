@@ -1,11 +1,11 @@
 package aero.glass.renderer.mark;
 
+import com.infomatiq.jsi.Rectangle;
 import com.infomatiq.jsi.rtree.RTree;
 
 import java.util.Set;
 
 import gnu.trove.TIntProcedure;
-import com.infomatiq.jsi.Rectangle;
 
 /**
  * Created by premeczmatyas on 31/01/16.

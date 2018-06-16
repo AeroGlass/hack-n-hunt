@@ -33,7 +33,7 @@ public class FontAtlasData {
     private float charHeight;
     private final float[] charWidths;
     private int textureSize;
-    private aero.glass.renderer.textrender.EFontTypes id;
+    private EFontTypes id;
 
 
     public static final int getCharArrayIndex(int index) {
@@ -43,7 +43,7 @@ public class FontAtlasData {
                 : c;
     }
 
-    public FontAtlasData(aero.glass.renderer.textrender.EFontTypes idIn, String file, int size,
+    public FontAtlasData(EFontTypes idIn, String file, int size,
                          int fontColor, int backgroundColor,
                          Integer shadowColor, AssetManager assets) {
 
