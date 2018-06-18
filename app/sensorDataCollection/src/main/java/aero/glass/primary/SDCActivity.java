@@ -3,8 +3,11 @@ package aero.glass.primary;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Vibrator;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+
+import java.util.Map;
 
 import aero.glass.utils.WifiHandler;
 
@@ -29,6 +32,11 @@ public class SDCActivity extends AeroActivity implements WifiHandler.WifiNewScan
         wifiHandler = new WifiHandler(this, this);
 
         super.onCreate(savedInstanceState);
+        for (Map<String, String> sosConnectionInfo : geoPackageHelper.getSOSConnectionInfos("custom")) {
+            for (Map.Entry<String, String> entry : sosConnectionInfo.entrySet()) {
+                Log.d(entry.getKey(), entry.getValue());
+            }
+        }
     }
 
     @Override

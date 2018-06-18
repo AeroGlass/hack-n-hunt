@@ -209,6 +209,32 @@ public class GeoPackageHelper {
         return suffixes;
     }
 
+    public List<Map<String,String>> getSOSConnectionInfos(String suffix) {
+        List<Map<String,String>> connectionInfos = new ArrayList<Map<String,String>>();
+        GeoPackageManager manager = GeoPackageFactory.getManager(activity);
+        GeoPackage geoPackage = manager.open(DB_NAME);
+        for (String featureTable : geoPackage.getFeatureTables()) {
+            if (featureTable.equals("cnp_" + suffix)) {
+                FeatureDao featureDao = geoPackage.getFeatureDao(featureTable);
+                FeatureCursor featureCursor = featureDao.queryForAll();
+                try {
+                    while (featureCursor.moveToNext()) {
+                        Map<String,String> map = new HashMap<String, String>();
+                        map.put("ssid", (String) featureCursor.getValue(3, GeoPackageDataType.TEXT));
+                        map.put("wifi_pwd", (String) featureCursor.getValue(4, GeoPackageDataType.TEXT));
+                        map.put("sos_uri", (String) featureCursor.getValue(5, GeoPackageDataType.TEXT));
+                        map.put("sos_user", (String) featureCursor.getValue(6, GeoPackageDataType.TEXT));
+                        map.put("sos_pwd", (String) featureCursor.getValue(7, GeoPackageDataType.TEXT));
+                        connectionInfos.add(map);
+                    }
+                } finally {
+                    featureCursor.close();
+                }
+            }
+        }
+        return connectionInfos;
+    }
+
     public void injectCustomRoute() {
         final GeoPackageManager manager = GeoPackageFactory.getManager(activity);
         final GeoPackage geoPackage = manager.open(DB_NAME);
