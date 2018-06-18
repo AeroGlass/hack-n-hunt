@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import aero.glass.android.R;
+import aero.glass.sensordatacollection.R;
 import aero.glass.unit.LengthUnit;
 
 /**

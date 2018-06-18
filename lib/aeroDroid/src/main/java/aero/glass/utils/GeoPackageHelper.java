@@ -29,9 +29,11 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import aero.glass.primary.SensorComponent;
 import aero.glass.unit.Location;
@@ -69,7 +71,7 @@ public class GeoPackageHelper {
     private static final double ALTITUDE = 100.0;
     private static final String DB_NAME = "hacknhunt-with-RTE";
     private static final String DB_FILE_NAME = DB_NAME + ".gpkg";
-    private static final boolean INJECT_JSON_TO_GPKG = false;
+    private static final boolean INJECT_CUSTOM_JSON_TO_GPKG = true;
     private static List<Location> demoPos = new ArrayList<Location>();
 
     private Vector3D center = null;
@@ -99,13 +101,13 @@ public class GeoPackageHelper {
         if (!dbFile.exists()) {
             FileIOHelper.copyFromAssetToSdcard(activity.getAssets(),
                     "aeroglass", "geopackage/" + DB_FILE_NAME);
-        }
 
-        if (INJECT_JSON_TO_GPKG) {
-            manager.importGeoPackage(dbFile, true);
-            injectCustomRoute();
-            manager.exportGeoPackage(DB_NAME, dir);
-            injectCustomImages(dbFile);
+            if (INJECT_CUSTOM_JSON_TO_GPKG) {
+                manager.importGeoPackage(dbFile, true);
+                injectCustomRoute();
+                manager.exportGeoPackage(DB_NAME, dir);
+                injectCustomImages(dbFile);
+            }
         }
 
         manager.importGeoPackage(dbFile, true);
@@ -122,9 +124,53 @@ public class GeoPackageHelper {
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (IOException e) {
-            return points;
+            e.printStackTrace();
         }
         return points;
+    }
+
+    private List<String> readColumnNamesFromJSON(AssetManager assetManager, String file) {
+        List<String> names = new ArrayList<String>();
+        try {
+            final JSONArray json = new JSONArray(FileIOHelper.loadString(assetManager, file));
+            if (json.length() > 0) {
+                Iterator keys = json.getJSONObject(0).keys();
+
+                while(keys.hasNext()) {
+                    String key = (String) keys.next();
+                    if (!"lat".equals(key) && !"lng".equals(key)) {
+                        names.add(key);
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return names;
+    }
+
+    private Set<Map.Entry<String, Object>> readColumnValuesFromJSON(AssetManager assetManager, String file, int id) {
+        Map<String, Object> values = new HashMap<String, Object>();
+        try {
+            final JSONArray json = new JSONArray(FileIOHelper.loadString(assetManager, file));
+            if (json.length() > 0) {
+                Iterator keys = json.getJSONObject(id).keys();
+
+                while(keys.hasNext()) {
+                    String key = (String) keys.next();
+                    if (!"lat".equals(key) && !"lng".equals(key)) {
+                        values.put(key, json.getJSONObject(id).get(key));
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return values.entrySet();
     }
 
     private Map<Integer,List<Bitmap>> readImagesFromJSON(AssetManager assetManager, String file) {
@@ -168,7 +214,8 @@ public class GeoPackageHelper {
         final GeoPackage geoPackage = manager.open(DB_NAME);
         final AssetManager assetManager = activity.getAssets();
 
-        createFeatureTable("route_custom", GeometryType.LINESTRING, geoPackage);
+        List<String> columnNames = readColumnNamesFromJSON(assetManager, "custom_data/custom_route.json");
+        createFeatureTable("route_custom", GeometryType.LINESTRING, geoPackage, columnNames);
         FeatureDao route_dao = geoPackage.getFeatureDao("route_custom");
         FeatureRow route_row = route_dao.newRow();
         LineString lineString = new LineString(false, false);
@@ -177,27 +224,41 @@ public class GeoPackageHelper {
         }
         route_row.setGeometry(new GeoPackageGeometryData(4326));
         route_row.getGeometry().setGeometry(lineString);
+        for (Map.Entry<String, Object> value : readColumnValuesFromJSON(assetManager, "custom_data/custom_route.json", 0)) {
+            route_row.setValue(value.getKey(), value.getValue());
+        }
         route_dao.insert(route_row);
 
-        createFeatureTable("cnp_custom", GeometryType.POINT, geoPackage);
+        columnNames = readColumnNamesFromJSON(assetManager, "custom_data/custom_cnp.json");
+        createFeatureTable("cnp_custom", GeometryType.POINT, geoPackage, columnNames);
         FeatureDao cnp_dao = geoPackage.getFeatureDao("cnp_custom");
+        int id = 0;
         for (Point point : readPointsFromJSON(assetManager, "custom_data/custom_cnp.json")) {
             FeatureRow cnp_row = cnp_dao.newRow();
             cnp_row.setGeometry(new GeoPackageGeometryData(4326));
             cnp_row.getGeometry().setGeometry(point);
+            for (Map.Entry<String, Object> value : readColumnValuesFromJSON(assetManager, "custom_data/custom_cnp.json", id++)) {
+                cnp_row.setValue(value.getKey(), value.getValue());
+            }
             cnp_dao.insert(cnp_row);
         }
 
-        createFeatureTable("poi_custom", GeometryType.POINT, geoPackage);
+        columnNames = readColumnNamesFromJSON(assetManager, "custom_data/custom_poi.json");
+        createFeatureTable("poi_custom", GeometryType.POINT, geoPackage, columnNames);
         FeatureDao poi_dao = geoPackage.getFeatureDao("poi_custom");
+        id = 0;
         for (Point point : readPointsFromJSON(assetManager, "custom_data/custom_poi.json")) {
             FeatureRow poi_row = poi_dao.newRow();
             poi_row.setGeometry(new GeoPackageGeometryData(4326));
             poi_row.getGeometry().setGeometry(point);
-            cnp_dao.insert(poi_row);
+            for (Map.Entry<String, Object> value : readColumnValuesFromJSON(assetManager, "custom_data/custom_poi.json", id++)) {
+                poi_row.setValue(value.getKey(), value.getValue());
+            }
+            poi_dao.insert(poi_row);
         }
 
-        createFeatureTable("aoi_custom", GeometryType.POLYGON, geoPackage);
+        columnNames = readColumnNamesFromJSON(assetManager, "custom_data/custom_aoi.json");
+        createFeatureTable("aoi_custom", GeometryType.POLYGON, geoPackage, columnNames);
         FeatureDao aoi_dao = geoPackage.getFeatureDao("aoi_custom");
         FeatureRow aoi_row = aoi_dao.newRow();
         lineString = new LineString(false, false);
@@ -209,6 +270,9 @@ public class GeoPackageHelper {
             Polygon polygon = new Polygon(false, false);
             polygon.addRing(lineString);
             aoi_row.getGeometry().setGeometry(polygon);
+            for (Map.Entry<String, Object> value : readColumnValuesFromJSON(assetManager, "custom_data/custom_aoi.json", 0)) {
+                aoi_row.setValue(value.getKey(), value.getValue());
+            }
             aoi_dao.insert(aoi_row);
         }
 
@@ -234,7 +298,7 @@ public class GeoPackageHelper {
         }
     }
 
-    private void createFeatureTable(String name, GeometryType type, GeoPackage geoPackage) {
+    private void createFeatureTable(String name, GeometryType type, GeoPackage geoPackage, List <String> columnNames) {
         if (geoPackage.isFeatureTable(name)) {
             geoPackage.deleteTable(name);
         }
@@ -242,6 +306,10 @@ public class GeoPackageHelper {
         columns.add(FeatureColumn.createPrimaryKeyColumn(0, "fid"));
         columns.add(FeatureColumn.createGeometryColumn(1, "geom", type, false, null));
         columns.add(FeatureColumn.createColumn(2, "id", GeoPackageDataType.INT, false, null));
+        int id = 3;
+        for (String columnName : columnNames) {
+            columns.add(FeatureColumn.createColumn(id++, columnName, GeoPackageDataType.TEXT, true, ""));
+        }
         geoPackage.createFeatureTable(new FeatureTable(name, columns));
         geoPackage.execSQL("INSERT INTO gpkg_contents (table_name, data_type, identifier, srs_id)" +
                 " VALUES ('" + name + "', 'features', '" + name + "', '4326');");

@@ -6,13 +6,12 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
-import aero.glass.aeroDroid.R;
+import aero.glass.aerodroid.R;
 import aero.glass.unit.Geoid;
 import aero.glass.utils.GeoPackageHelper;
 

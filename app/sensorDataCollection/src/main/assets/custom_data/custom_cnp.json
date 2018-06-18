@@ -1,4 +1,4 @@
 [
-  {"lat": 47.484200, "lng": 19.063152},
-  {"lat": 47.481098, "lng": 19.066843}
+  {"lat": 47.484200, "lng": 19.063152, "ssid" : "Discus-Lonyay", "wifi_pwd" : "YW0245753", "sos_uri" : "http://192.168.1.71:8181/sensorhub/sos", "sos_username" : "sensor", "sos_pwd" : "pwd"},
+  {"lat": 47.481098, "lng": 19.066843, "ssid" : "DIGI-01071319", "wifi_pwd" : "asrkJMCy", "sos_uri" : "http://192.168.1.71:8181/sensorhub/sos", "sos_username" : "sensor", "sos_pwd" : "pwd"}
 ]
