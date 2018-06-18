@@ -1,7 +1,11 @@
 package aero.glass.utils;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.res.AssetManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -25,6 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -90,6 +95,7 @@ public class GeoPackageHelper {
     public GeoPackageHelper(Activity a) {
         activity = a;
         GeoPackageManager manager = GeoPackageFactory.getManager(activity);
+
         manager.deleteAll();
         File dir = new File(Environment.getExternalStorageDirectory(), "aeroglass/geopackage");
         if (!dir.isDirectory()) {
@@ -111,6 +117,12 @@ public class GeoPackageHelper {
         }
 
         manager.importGeoPackage(dbFile, true);
+    }
+
+    public void exportToFile() {
+        GeoPackageManager manager = GeoPackageFactory.getManager(activity);
+        File dir = new File(Environment.getExternalStorageDirectory(), "aeroglass/geopackage");
+        manager.exportGeoPackage(DB_NAME, dir);
     }
 
     private List<Point> readPointsFromJSON(AssetManager assetManager, String file) {
@@ -206,6 +218,7 @@ public class GeoPackageHelper {
                 suffixes.add(featureTable.substring(6));
             }
         }
+        geoPackage.close();
         return suffixes;
     }
 
@@ -232,6 +245,7 @@ public class GeoPackageHelper {
                 }
             }
         }
+        geoPackage.close();
         return connectionInfos;
     }
 
@@ -313,13 +327,6 @@ public class GeoPackageHelper {
                 readImagesFromJSON(activity.getAssets(), "custom_data/custom_cnp_image_map.json").entrySet()) {
             for (Bitmap image : imageMap.getValue()) {
                 rteHelper.addImage("cnp_custom", imageMap.getKey(), image);
-            }
-        }
-
-        for(Map.Entry<Integer, List<Bitmap>> imageMap :
-                readImagesFromJSON(activity.getAssets(), "custom_data/custom_aoi_image_map.json").entrySet()) {
-            for (Bitmap image : imageMap.getValue()) {
-                rteHelper.addImage("aoi_custom", imageMap.getKey(), image);
             }
         }
     }
@@ -418,6 +425,7 @@ public class GeoPackageHelper {
             }
         } finally {
             featureCursor.close();
+            geoPackage.close();
         }
         finaliseMesh();
     }
@@ -616,5 +624,43 @@ public class GeoPackageHelper {
         Color color = Color.fromRGBA(rnd.nextFloat(), rnd.nextFloat(), rnd.nextFloat(), 1.0f);
         meshes.add(new IndexedMesh(GLPrimitive.triangles(), center, verticeBuffer,
                 true, indexBuffer, true, 1.0f, 1.0f, color, colorBuffer, 1, false, null));
+    }
+
+    public void injectMeasurement(int id, String name, double data, String suffix) {
+        final GeoPackageManager manager = GeoPackageFactory.getManager(activity);
+        final GeoPackage geoPackage = manager.open(DB_NAME);
+
+        final String baseTable = "cnp_" + suffix;
+        final String measTable = "measurement_" + suffix;
+        final String relationTable = "cnp_" + suffix + "_measurement";
+
+        if (!geoPackage.isTable(measTable)) {
+            Cursor maxID_cursor = geoPackage.rawQuery("SELECT MAX(id) AS id FROM gpkgext_relations;", null);
+            maxID_cursor.moveToFirst();
+
+            int maxID = maxID_cursor.getInt(maxID_cursor.getColumnIndex("id")) + 1;
+            geoPackage.execSQL("DROP TABLE IF EXISTS " + relationTable + ";");
+            geoPackage.execSQL("CREATE TABLE IF NOT EXISTS " + relationTable + "(base_id INTEGER NOT NULL, related_id INTEGER NOT NULL);");
+            geoPackage.execSQL("DELETE FROM gpkgext_relations WHERE mapping_table_name = '" + relationTable + "'");
+            geoPackage.execSQL("INSERT INTO gpkgext_relations VALUES (" + maxID++ + ", '" + baseTable + "', 'fid', '" + measTable + "', 'id', 'simple_attributes', '" + relationTable + "');");
+
+            geoPackage.execSQL("DROP TABLE IF EXISTS " + measTable + ";");
+            geoPackage.execSQL("CREATE TABLE " + measTable + "(id INTEGER PRIMARY KEY AUTOINCREMENT, data REAL NOT NULL, content_type TEXT NOT NULL);");
+
+            geoPackage.execSQL("DELETE FROM gpkg_contents WHERE table_name = '" + measTable + "'");
+            geoPackage.execSQL("INSERT INTO gpkg_contents (table_name, data_type, identifier, srs_id)" +
+                    " VALUES ('" + measTable + "', 'aspatial', '" + measTable + "', '0');");
+        }
+
+        Cursor relation_cursor = geoPackage.rawQuery(
+                "SELECT related_table_name, related_primary_column, mapping_table_name FROM gpkgext_relations " +
+                        "WHERE base_table_name = '" + baseTable + "' AND relation_name = 'simple_attributes';", null);
+        relation_cursor.moveToFirst();
+        String mapping_table = relation_cursor.getString(relation_cursor.getColumnIndex("mapping_table_name"));
+        String related_table = relation_cursor.getString(relation_cursor.getColumnIndex("related_table_name"));
+
+        geoPackage.execSQL("INSERT INTO " + related_table + " (data, content_type) VALUES (" + data + ", '" + name + "');");
+        geoPackage.execSQL("INSERT INTO " + mapping_table + " VALUES (" + id + ", last_insert_rowid());");
+        geoPackage.close();
     }
 }

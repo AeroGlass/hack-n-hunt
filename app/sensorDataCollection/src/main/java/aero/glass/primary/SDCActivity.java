@@ -37,6 +37,10 @@ public class SDCActivity extends AeroActivity implements WifiHandler.WifiNewScan
                 Log.d(entry.getKey(), entry.getValue());
             }
         }
+        geoPackageHelper.injectMeasurement(1, "test1", 666.0, "custom");
+        geoPackageHelper.injectMeasurement(1, "test2", 999.0, "custom");
+        geoPackageHelper.injectMeasurement(2, "test3", 1024.0, "custom");
+        geoPackageHelper.exportToFile();
     }
 
     @Override
