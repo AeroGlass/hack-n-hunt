@@ -102,6 +102,36 @@ public class WifiHandler extends BroadcastReceiver {
         wfc.SSID = convertToQuotedString(scanResult.SSID);
         wfc.BSSID = scanResult.BSSID;
 
+        final String cap = scanResult.capabilities;
+        String securityMode = OPEN;
+        for (int i = SECURITY_MODES.length - 1; i >= 0; i--) {
+            if (cap.contains(SECURITY_MODES[i])) {
+                securityMode = SECURITY_MODES[i];
+                break;
+            }
+        }
+
+        if (securityMode.equals(WEP)) {
+            wfc.wepKeys[0] = "\"" + pass + "\"";
+            wfc.wepTxKeyIndex = 0;
+            wfc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+            wfc.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+        } else if (securityMode.equals(WPA) || securityMode.equals(WPA2)) {
+            wfc.preSharedKey = "\""+ pass +"\"";
+        } else {
+            wfc.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+        }
+
+        WifiManager wifiManager = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
+
+        int netId = wifiManager.addNetwork(wfc);
+        wifiManager.disconnect();
+        wifiManager.enableNetwork(netId, true);
+        boolean connected = wifiManager.reconnect();
+
+        return connected;
+
+        /*
         setupSecurity(wfc, scanResult, pass);
         //TODO: should do this some smarter way?
         wfc.priority = 40;
@@ -138,6 +168,7 @@ public class WifiHandler extends BroadcastReceiver {
         boolean connected = wifiManager.reconnect();
 
         return connected;
+        */
     }
 
     private WifiConfiguration getWifiConfiguration(final WifiManager wifiMgr, final WifiConfiguration configToFind) {

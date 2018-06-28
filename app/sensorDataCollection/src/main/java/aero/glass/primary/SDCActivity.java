@@ -130,8 +130,10 @@ public class SDCActivity extends AeroActivity implements WifiHandler.WifiNewScan
 
     @Override
     public void wifiNewScanAvailable() {
-        String SSID = "DIGI-01071319";
-        String pass = "asrkJMCy";
+        //String SSID = "DIGI-01071319";
+        //String pass = "asrkJMCy";
+        String SSID = "API-Guest";
+        String pass = "";
         boolean connected = wifiHandler.connectIfExist(SSID, pass);
         if (connected) {
             Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
